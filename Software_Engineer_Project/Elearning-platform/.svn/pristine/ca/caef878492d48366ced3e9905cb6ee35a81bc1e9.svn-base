@@ -1,0 +1,12 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.ResourceDao;
+
+public class ResourceManager {
+	private ResourceDao resourceDao;
+
+	public void setResourceDao(ResourceDao resourceDao) {
+		this.resourceDao = resourceDao;
+	}
+
+}

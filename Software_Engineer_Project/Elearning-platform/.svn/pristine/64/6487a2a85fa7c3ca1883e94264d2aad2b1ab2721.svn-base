@@ -1,0 +1,66 @@
+package da.kang.learning_platform.pojo;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * 试卷
+ * 
+ * @author zdk
+ * 
+ */
+public class Paper implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2404691125550624049L;
+
+	private Long id;
+	private int score;
+	private User creater;
+	private Set<Topic> topics = new HashSet<Topic>();
+	private String createTime;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public User getCreater() {
+		return creater;
+	}
+
+	public void setCreater(User creater) {
+		this.creater = creater;
+	}
+
+	public Set<Topic> getTopics() {
+		return topics;
+	}
+
+	public void setTopics(Set<Topic> topics) {
+		this.topics = topics;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+}

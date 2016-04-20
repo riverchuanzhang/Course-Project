@@ -1,0 +1,16 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.PaperDao;
+
+/**
+ * @author zdk
+ *
+ */
+public class PaperManager {
+	private PaperDao paperDao;
+
+	public void setPaperDao(PaperDao paperDao) {
+		this.paperDao = paperDao;
+	}
+
+}

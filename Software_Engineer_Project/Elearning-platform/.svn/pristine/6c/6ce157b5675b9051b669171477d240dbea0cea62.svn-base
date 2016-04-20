@@ -1,0 +1,72 @@
+package da.kang.learning_platform.service;
+
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+
+import da.kang.learning_platform.dao.LearningGroupDao;
+import da.kang.learning_platform.exception.AppException;
+import da.kang.learning_platform.exception.ExceptionInfo;
+import da.kang.learning_platform.exception.Status;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.orm.TransactionSupport;
+import da.kang.learning_platform.pojo.LearningGroup;
+
+public class LearningGroupManager implements TransactionSupport {
+	private LearningGroupDao learningGroupDao;
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setLearningGroupDao(LearningGroupDao learningGroupDao) {
+		this.learningGroupDao = learningGroupDao;
+	}
+
+	public Page<LearningGroup> searchLearningGroup(
+			final Page<LearningGroup> page, final List<PropertyFilter> filters)
+			throws AppException {
+		Page<LearningGroup> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			result = learningGroupDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+	
+	public void save(LearningGroup learningGroup) throws AppException{
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try{
+			learningGroupDao.save(learningGroup);
+			transactionManager.commit(status);
+		}catch(Exception e){
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}	
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

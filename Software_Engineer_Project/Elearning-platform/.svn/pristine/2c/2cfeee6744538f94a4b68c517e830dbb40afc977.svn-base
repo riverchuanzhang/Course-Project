@@ -1,0 +1,12 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.CommentDao;
+
+public class CommentManager {
+	private CommentDao commentDao;
+
+	public void setCommentDao(CommentDao commentDao) {
+		this.commentDao = commentDao;
+	}
+
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="answerManager" class="da.kang.learning_platform.service.AnswerManager">
+		<property name="answerDao" ref="answerDao" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="learningGroupManager" class="da.kang.learning_platform.service.LearningGroupManager">
+		<property name="learningGroupDao" ref="learningGroupDao"/>
+		<property name="userDao" ref="userDao" />
+		<property name="paperDao" ref="paperDao" />
+		<property name="topicDao" ref="topicDao"/>
+		<property name="questionDao" ref="questionDao" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="paperManager" class="da.kang.learning_platform.service.PaperManager">
+		<property name="paperDao" ref="paperDao" />
+		<property name="topicDao" ref="topicDao"/>
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="practiceManager" class="da.kang.learning_platform.service.PracticeManager">
+		<property name="practiceDao" ref="practiceDao" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="questionManager" class="da.kang.learning_platform.service.QuestionManager">
+		<property name="questionDao" ref="questionDao" />
+		<property name="learningGroupDao" ref="learningGroupDao" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="topicManager" class="da.kang.learning_platform.service.TopicManager">
+		<property name="topicDao" ref="topicDao"/>
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+	<bean id="userManager" class="da.kang.learning_platform.service.UserManager">
+		<property name="userDao" ref="userDao" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionDefinition" ref="transactionDefinition" />
+	</bean>
+</beans>

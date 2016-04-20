@@ -1,0 +1,36 @@
+package da.kang.learning_platform.service;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+
+import da.kang.learning_platform.dao.PaperDao;
+import da.kang.learning_platform.orm.TransactionSupport;
+
+/**
+ * @author zdk
+ * 
+ */
+public class PaperManager implements TransactionSupport {
+	private PaperDao paperDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setPaperDao(PaperDao paperDao) {
+		this.paperDao = paperDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- <constant name="struts.configuration.xml.reload" value="true" /> <constant 
+		name="struts.action.extension" value="action,do,webwork" /> <constant name="struts.enable.DynamicMethodInvocation" 
+		value="true" /> <constant name="struts.devMode" value="true" /> <constant 
+		name="struts.multipart.maxSize" value="100971520"></constant> <constant name="struts.i18n.encoding" 
+		value="UTF-8"></constant> <constant name="struts.objectFactory.spring.autoWire" 
+		value="name"></constant> 将struts2交给spring管理 <constant name="struts.objectFactory" 
+		value="spring"></constant> <constant name="struts.custom.i18n.resources" 
+		value="messages"></constant> <include file="strutsConfig/common.xml"></include> 
+		<include file="strutsConfig/struts-test.xml"></include> <include file="strutsConfig/struts-admin.xml"></include> 
+		<include file="strutsConfig/struts-web.xml"></include> <include file="strutsConfig/struts-admin.xml"></include> 
+		<include file="strutsConfig/struts-consumer.xml"></include> <include file="strutsConfig/struts-restaurant.xml"></include> 
+		<include file="strutsConfig/struts-web.xml"></include> -->
+		
+	<!--struts在默认配置下对任何提交到action的参数强制需要setter方法,我这里改为false,但是失效 -->
+	<constant name="struts.devMode" value="false" />
+
+	<!-- 将struts2的对象交给spring管理。其实这个常量不必添加,因为在引入 struts2-spring-plugins在它的配置文件中就已经添加上去了 -->
+	<constant name="struts.objectFactory" value="spring"></constant>
+
+	<package namespace="/" name="learning_platform" extends="struts-default">
+
+		<action name="test" class="da.kang.learning_platform.web.action.TestAction">
+			<result name="success">/index.jsp</result>
+			<result name="error">/jsp/common/500.jsp</result>
+		</action>
+		<action name="user" class="da.kang.learning_platform.web.action.UserAction">
+			<result name="success" type="redirect">/index.jsp</result>
+			<result name="error" type="redirect">/jsp/common/error.jsp
+			</result>
+			<exception-mapping result="error"
+				exception="da.kang.learning_platform.exception.AppException"></exception-mapping>
+		</action>
+		<action name="learning_group"
+			class="da.kang.learning_platform.web.action.LearningGroupAction">
+			<result name="success">/jsp/secure/learning_group.jsp</result>
+			<result name="error" type="redirect">/jsp/common/error.jsp
+			</result>
+			<exception-mapping result="error"
+				exception="da.kang.learning_platform.exception.AppException"></exception-mapping>
+		</action>
+	</package>
+</struts>

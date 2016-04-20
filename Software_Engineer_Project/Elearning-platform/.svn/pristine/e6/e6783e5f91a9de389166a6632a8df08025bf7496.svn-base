@@ -1,0 +1,16 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.NoteDao;
+
+/**
+ * @author zdk
+ * 
+ */
+public class NoteManager {
+	private NoteDao noteDao;
+
+	public void setNoteDao(NoteDao noteDao) {
+		this.noteDao = noteDao;
+	}
+
+}

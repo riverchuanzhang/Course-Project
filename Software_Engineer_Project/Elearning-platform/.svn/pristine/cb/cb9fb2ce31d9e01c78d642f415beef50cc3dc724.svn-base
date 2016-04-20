@@ -1,0 +1,35 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>学习组成员</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+<link rel="stylesheet" href="${ctx}/css/jquery-ui-vertical-tabs.css">
+<script type="text/javascript">
+	$(function() {
+		$("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+		$("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+	});
+</script>
+
+</head>
+<body>
+	<%@ include file="/jsp/include/header.jsp"%>
+	<h2>${learningGroup.name}组</h2>
+	<div id="tabs">
+		<ul>
+			<li><a
+				href="${ctx}/question!list.action?EQL_learningGroup.id=${learningGroup.id}">讨论</a></li>
+			<li><a href="#tabs-practice">练习</a></li>
+			<li><a
+				href="${ctx}/learning_group!listMember.action?learningGroup.id=${learningGroup.id}">成员</a></li>
+			<li><a href="#tabs-resource">资源</a></li>
+		</ul>
+		<div id="tabs-practice">练习</div>
+		<div id="tabs-resource">资源(不做)</div>
+	</div>
+</body>
+</html>

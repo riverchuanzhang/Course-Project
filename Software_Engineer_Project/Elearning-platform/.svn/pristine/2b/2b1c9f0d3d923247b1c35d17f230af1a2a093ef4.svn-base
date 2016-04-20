@@ -1,0 +1,259 @@
+package da.kang.learning_platform.service;
+
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.Assert;
+
+import da.kang.learning_platform.dao.LearningGroupDao;
+import da.kang.learning_platform.dao.PaperDao;
+import da.kang.learning_platform.dao.QuestionDao;
+import da.kang.learning_platform.dao.ResourceDao;
+import da.kang.learning_platform.dao.TopicDao;
+import da.kang.learning_platform.dao.UserDao;
+import da.kang.learning_platform.exception.AppException;
+import da.kang.learning_platform.exception.ExceptionInfo;
+import da.kang.learning_platform.exception.Status;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.orm.TransactionSupport;
+import da.kang.learning_platform.pojo.LearningGroup;
+import da.kang.learning_platform.pojo.User;
+
+public class LearningGroupManager implements TransactionSupport {
+	private LearningGroupDao learningGroupDao;
+	
+	/*由于单向多对一关系,所以删除一，无法自动把多端的记录也删除。所以删除一时，先删除关联它的记录*/
+	private TopicDao topicDao;
+	private PaperDao paperDao;
+	private UserDao userDao;
+	private QuestionDao questionDao;
+	private ResourceDao resourceDao;
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setLearningGroupDao(LearningGroupDao learningGroupDao) {
+		this.learningGroupDao = learningGroupDao;
+	}
+
+	/**
+	 * 对群组进行分页
+	 * 
+	 * @param page
+	 * @param filters
+	 * @return
+	 * @throws AppException
+	 */
+	public Page<LearningGroup> findPage(final Page<LearningGroup> page,
+			final List<PropertyFilter> filters) throws AppException {
+		Page<LearningGroup> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			result = learningGroupDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	/**
+	 * 对某个成员,进行群组分页
+	 */
+	public Page<LearningGroup> findPage(final Page<LearningGroup> page,
+			final List<PropertyFilter> filters, Long memberId)
+			throws AppException {
+		Assert.notNull(memberId);
+		Page<LearningGroup> result = null;
+		
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		
+		try {
+			filters.add(new PropertyFilter("EQL_users.id", memberId + ""));
+			result = learningGroupDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	/**
+	 * 添加组
+	 * 
+	 * @param learningGroup
+	 * @throws AppException
+	 */
+	public void save(LearningGroup learningGroup) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			learningGroupDao.save(learningGroup);
+			User user=userDao.get(learningGroup.getCreater().getId());
+			learningGroup.getUsers().add(user);
+			user.getLearningGroups().add(learningGroup);
+			learningGroupDao.flush();
+			/*userDao.save(user);*/
+			learningGroupDao.getSession().clear();
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}
+	}
+
+	/**
+	 * 删除组
+	 * 
+	 * @param id
+	 * @throws AppException
+	 */
+	public void delete(Long id) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			learningGroupDao.delete(id);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(!status.isCompleted()){
+				transactionManager.rollback(status);
+			}
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+	}
+
+	/**
+	 * 
+	 * 获取组
+	 * 
+	 * @param id
+	 * @return
+	 * @throws AppException
+	 */
+	public LearningGroup get(Long id) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		LearningGroup learningGroup = null;
+		try {
+			learningGroup = learningGroupDao.get(id);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return learningGroup;
+	}
+
+	/**
+	 * 向组删除成员
+	 * 
+	 * @param id
+	 * @param memberId
+	 * @throws AppException
+	 */
+	public void deleteMember(Long id, Long memberId) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		LearningGroup learningGroup = null;
+		try {
+			learningGroup = learningGroupDao.get(id);
+			Set<User> members = learningGroup.getUsers();
+			for (User member : members) {
+				if (member.getId().equals(memberId)) {
+					members.remove(member);
+					break;
+				}
+			}
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+	}
+
+	/**
+	 * 向组添加成员
+	 * 
+	 * @param id
+	 * @param memberId
+	 * @throws AppException
+	 */
+	public void addMember(Long groupId, Long memberId) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		LearningGroup learningGroup = null;
+		User member = new User();
+		member.setId(memberId);
+		try {
+			learningGroup = learningGroupDao.get(groupId);
+			learningGroup.getUsers().add(member);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+	}
+
+	/*	*//**
+	 * 删除问题
+	 */
+	/*
+	 * public void deleteQuestion(Long groupId, Long questionId) throws
+	 * AppException { TransactionStatus status = transactionManager
+	 * .getTransaction(transactionDefinition); LearningGroup learningGroup =
+	 * null; try { learningGroup = learningGroupDao.get(groupId); for (Question
+	 * question : learningGroup.getQuestions()) { if
+	 * (question.getId().equals(questionId)) {
+	 * learningGroup.getQuestions().remove(question); } }
+	 * transactionManager.commit(status); } catch (Exception e) {
+	 * e.printStackTrace(); transactionManager.rollback(status); throw new
+	 * AppException(new Status(ExceptionInfo.Type.DB_DELETE, e)); } }
+	 */
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public void setPaperDao(PaperDao paperDao) {
+		this.paperDao = paperDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public void setQuestionDao(QuestionDao questionDao) {
+		this.questionDao = questionDao;
+	}
+
+	public void setResourceDao(ResourceDao resourceDao) {
+		this.resourceDao = resourceDao;
+	}
+	public void setTopicDao(TopicDao topicDao) {
+		this.topicDao = topicDao;
+	}
+
+}

@@ -1,0 +1,32 @@
+package da.kang.learning_platform.service;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+
+import da.kang.learning_platform.dao.AnswerDao;
+import da.kang.learning_platform.orm.TransactionSupport;
+
+public class AnswerManager implements TransactionSupport {
+	private AnswerDao answerDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setAnswerDao(AnswerDao answerDao) {
+		this.answerDao = answerDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

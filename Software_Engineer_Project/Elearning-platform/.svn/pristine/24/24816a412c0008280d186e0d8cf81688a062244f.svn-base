@@ -1,0 +1,74 @@
+package da.kang.learning_platform.web.action;
+
+import javax.servlet.ServletContext;
+
+import org.apache.struts2.ServletActionContext;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.dao.BaseDao;
+import da.kang.learning_platform.dao.LearningGroupDao;
+import da.kang.learning_platform.pojo.LearningGroup;
+
+public class TestAction extends ActionSupport {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4845587985491095726L;
+
+	@Override
+	public String execute() throws Exception {
+
+		try {
+			ServletContext context = ServletActionContext.getRequest()
+					.getSession().getServletContext();
+			/*
+			 * ApplicationContext ctx = WebApplicationContextUtils
+			 * .getRequiredWebApplicationContext(ServletActionContext
+			 * .getServletContext());
+			 */
+			ApplicationContext ctx = WebApplicationContextUtils
+					.getRequiredWebApplicationContext(context);
+		/*	if (ctx.containsBean("BaseDao")) {
+				System.out.println("BaseDao------not null");
+			} else {
+				System.out.println("BaseDao------ null");
+			}
+			BaseDao baseDao = (BaseDao) ctx
+					.getBean("BaseDao");
+			System.out.println(baseDao);*/
+			
+			if (ctx.containsBean("dataSource")) {
+				System.out.println("dataSource------not null");
+			} else {
+				System.out.println("dataSource------ null");
+			}
+			if (ctx.containsBean("sessionFactory")) {
+				System.out.println("sessionFactory------not null");
+			} else {
+				System.out.println("sessionFactory------null");
+			}
+
+			String displayName = ctx.getDisplayName();
+			System.out.println(displayName);
+			LearningGroupDao learningGroupDao = (LearningGroupDao) ctx
+					.getBean("LearningGroupDao");
+			LearningGroup group = new LearningGroup();
+			group.setIntro("ssfsf");
+			group.setName("group1");
+			learningGroupDao.save(group);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("TestAction");
+		return SUCCESS;
+	}
+
+}

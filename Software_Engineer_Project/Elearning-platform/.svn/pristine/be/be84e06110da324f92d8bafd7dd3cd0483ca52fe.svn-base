@@ -1,0 +1,145 @@
+package da.kang.learning_platform.web.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.pojo.User;
+import da.kang.learning_platform.service.UserManager;
+
+public class UserAction extends ActionSupport {
+	private static final long serialVersionUID = 1L;
+
+	private UserManager userManager;
+
+	/*
+	 * // 编程式事务 private TransactionDefinition transactionDefinition; private
+	 * PlatformTransactionManager transactionManager;
+	 */
+	private User user;
+
+	@Override
+	public String execute() throws Exception {
+		try {
+			System.out.println("execute()");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return super.execute();
+	}
+
+	/**
+	 * 注册
+	 * 
+	 */
+	public String register() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		// 已经登录,不能注册
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			User loginedUser = (User) session.getAttribute("user");
+			if (loginedUser != null) {
+				return ERROR;
+			}
+		}
+		// 验证提交信息,用户名和密码必填
+		if (StringUtils.isEmpty(user.getUserName())
+				|| StringUtils.isEmpty(user.getPassword())) {
+			return ERROR;
+		}
+		try {
+			// 保存用户
+			userManager.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ERROR;
+		}
+		return SUCCESS;
+	}
+
+	/**
+	 * 登录
+	 */
+	public String login() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession(false);
+		if (session != null) {// 验证是否已经登录
+			User loginedUser = (User) session.getAttribute("user");
+			if (loginedUser != null) {
+				return ERROR;
+			}
+		}
+		if (StringUtils.isEmpty(user.getUserName())
+				|| StringUtils.isEmpty(user.getPassword())) {
+			return ERROR;
+		}
+		try {
+			user = userManager.getUserByNameAndPassword(user.getUserName(),
+					user.getPassword());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (user == null) {
+			return ERROR;
+		} else {
+			HttpSession s = request.getSession();
+			s.setAttribute("user", user);
+		}
+		return SUCCESS;
+	}
+
+	/**
+	 * 注销
+	 */
+	public String logout() throws Exception {
+		return null;
+	}
+
+	/*
+	 * private void save() { TransactionStatus status = transactionManager
+	 * .getTransaction(transactionDefinition); if (status.isCompleted()) {
+	 * System.out.println("completed"); } else {
+	 * System.out.println("no completed"); } try { Role role = new Role();
+	 * role.setName("ss");
+	 * 
+	 * User user = new User(); user.setUserName("name1"); user.setSex(1);
+	 * user.setEmail("email1"); user.setRegisterTime("2012");
+	 * 
+	 * user.getRoles().add(role);
+	 * 
+	 * userManager.save(user); transactionManager.commit(status);
+	 * System.out.println("save()"); } catch (Exception e) {
+	 * e.printStackTrace(); transactionManager.rollback(status);
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
+
+	public void setUserManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
+
+	/*
+	 * public void setTransactionDefinition( TransactionDefinition
+	 * transactionDefinition) { this.transactionDefinition =
+	 * transactionDefinition; }
+	 * 
+	 * public void setTransactionManager( PlatformTransactionManager
+	 * transactionManager) { this.transactionManager = transactionManager; }
+	 */
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+}

@@ -1,0 +1,148 @@
+package da.kang.learning_platform.service;
+
+import java.util.List;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.Assert;
+
+import da.kang.learning_platform.dao.AnswerDao;
+import da.kang.learning_platform.exception.AppException;
+import da.kang.learning_platform.exception.ExceptionInfo;
+import da.kang.learning_platform.exception.Status;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.orm.TransactionSupport;
+import da.kang.learning_platform.pojo.Answer;
+
+public class AnswerManager implements TransactionSupport {
+	private AnswerDao answerDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	/**
+	 * 获取Answer
+	 */
+	public Answer get(Long answerId) throws AppException {
+		Answer answer = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			answer = answerDao.get(answerId);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return answer;
+	}
+
+	/**
+	 * 保存或修改Answer
+	 */
+	public void save(Answer answer) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			answerDao.save(answer);
+			answerDao.getSession().clear();
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}
+	}
+
+	/**
+	 * 分页
+	 */
+	public Page<Answer> findPage(final Page<Answer> page,
+			final List<PropertyFilter> filters) throws AppException {
+		Page<Answer> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			result = answerDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	/**
+	 * 分页
+	 */
+	public Page<Answer> findPage(final Page<Answer> page,
+			final List<PropertyFilter> filters, Long questionId)
+			throws AppException {
+		Assert.notNull(questionId);
+		Page<Answer> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			filters.add(new PropertyFilter("EQL_question.id", questionId + ""));
+			result = answerDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	public void delete(Answer answer) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			answerDao.delete(answer);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (!status.isCompleted()) {
+				transactionManager.rollback(status);
+			}
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+
+	}
+
+	/*	*//**
+	 * 获取Answer
+	 */
+	/*
+	 * public Set<Answer> getAnswers(Long questionId) throws AppException {
+	 * List<Answer> answers = null; TransactionStatus status =
+	 * transactionManager .getTransaction(transactionDefinition); try {
+	 * Criterion criterion = Restrictions.eq("question.id", questionId); answers
+	 * = answerDao.find(criterion); transactionManager.commit(status); } catch
+	 * (Exception e) { e.printStackTrace(); transactionManager.rollback(status);
+	 * throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e)); }
+	 * return new HashSet<Answer>(answers); }
+	 */
+
+	public void setAnswerDao(AnswerDao answerDao) {
+		this.answerDao = answerDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

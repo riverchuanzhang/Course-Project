@@ -1,0 +1,15 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<div id="menu">
+	<ul>
+		<li class="menuitem"><a
+			href="${ctx}/learning_group!info.action?learningGroup.id=${learningGroup.id}">群信息(简介)</a></li>
+		<li class="menuitem"><a
+			href="${ctx}/question!listForLGroup.action?learningGroup.id=${learningGroup.id}">讨论</a></li>
+		<li class="menuitem"><a
+			href="${ctx}/paper!listForLGroup.action?learningGroup.id=${learningGroup.id}">练习试卷</a></li>
+		<li class="menuitem"><a
+			href="${ctx}/user!listForLGroup.action?learningGroup.id=${learningGroup.id}">成员</a></li>
+		<li class="menuitem"><a href="#">其他</a></li>
+	</ul>
+</div>

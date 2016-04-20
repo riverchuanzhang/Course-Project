@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<!-- <property name="driverClassName" value="com.mysql.jdbc.Driver" /> 
+			<property name="url" value="jdbc:mysql://localhost:3306/learning_platform?useUnicode=true" 
+			/> <property name="username" value="root" /> <property name="password" value="1234" 
+			/> -->
+
+		<!-- Connection Info -->
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/learning_platform?useUnicode=true&amp;characterEncoding=utf-8" />
+		<property name="username" value="root" />
+		<property name="password" value="1234" />
+
+		<!-- Connection Pooling Info -->
+		<!-- <property name="maxIdle" value="5" /> <property name="maxActive" value="40" 
+			/> <property name="defaultAutoCommit" value="false" /> <property name="timeBetweenEvictionRunsMillis" 
+			value="3600000" /> <property name="minEvictableIdleTimeMillis" value="3600000" 
+			/> -->
+	</bean>
+
+	<!-- Hibernate配置 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- <property name="namingStrategy"> <bean class="org.hibernate.cfg.ImprovedNamingStrategy" 
+			/> </property> -->
+		<!-- 不使用注解的 -->
+		<property name="mappingResources">
+			<list>
+				<!-- 以下用来列出所有的PO映射文件 -->
+				<value>da/kang/learning_platform/pojo/Question.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Answer.hbm.xml</value>
+
+				<value>da/kang/learning_platform/pojo/Note.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Comment.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/LearningGroup.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Message.hbm.xml</value>
+
+				<value>da/kang/learning_platform/pojo/Paper.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Practice.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Resource.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Role.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/Topic.hbm.xml</value>
+				<value>da/kang/learning_platform/pojo/User.hbm.xml</value>
+
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<!-- 检查数据库结构 -->
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<!-- <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop> 
+					<prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache/ehcache-hibernate-local.xml</prop> -->
+
+			</props>
+		</property>
+		<!-- <property name="packagesToScan" value="com.rdc.dhm.entity.base" /> -->
+	</bean>
+	<bean id="LearningGroupDao" class="da.kang.learning_platform.dao.LearningGroupDao">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+</beans>

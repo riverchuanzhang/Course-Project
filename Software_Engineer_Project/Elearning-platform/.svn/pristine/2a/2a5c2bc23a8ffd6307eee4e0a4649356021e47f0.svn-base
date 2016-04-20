@@ -1,0 +1,118 @@
+package da.kang.learning_platform.service;
+
+import java.util.List;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+
+import da.kang.learning_platform.dao.PaperDao;
+import da.kang.learning_platform.exception.AppException;
+import da.kang.learning_platform.exception.ExceptionInfo;
+import da.kang.learning_platform.exception.Status;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.orm.TransactionSupport;
+import da.kang.learning_platform.pojo.Paper;
+import da.kang.learning_platform.pojo.Question;
+
+/**
+ * @author zdk
+ * 
+ */
+public class PaperManager implements TransactionSupport {
+	private PaperDao paperDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	/**
+	 * 对某个群组,查询试卷分页
+	 */
+	public Page<Paper> findPage(final Page<Paper> page,
+			final List<PropertyFilter> filters, Long learningGroupId)
+			throws AppException {
+		Page<Paper> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			filters.add(new PropertyFilter("EQL_learningGroup.id",
+					learningGroupId + ""));
+			result = paperDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	/**
+	 * 获取试卷
+	 */
+	public Paper get(Long id) throws AppException {
+		Paper paper = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			paper = paperDao.get(id);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return paper;
+	}
+
+	/**
+	 * 添加试卷
+	 */
+	public void save(Paper paper) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			paperDao.save(paper);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}
+	}
+
+	/**
+	 * 删除试卷
+	 */
+	public void delete(Long paperId) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			paperDao.delete(paperId);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+	}
+
+	public void setPaperDao(PaperDao paperDao) {
+		this.paperDao = paperDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

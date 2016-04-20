@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="User" table="user">
+		<id name="id" type="java.lang.Integer">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="userName" column="user_name" type="java.lang.String" />
+		<property name="password" column="password" type="java.lang.String" />
+		<property name="mail" column="mail" type="java.lang.String" />
+		<property name="MALE" column="blog_title" type="java.lang.Integer" />
+		<property name="registerTime" column="blog_title" type="java.lang.String" />
+	</class>
+</hibernate-mapping>

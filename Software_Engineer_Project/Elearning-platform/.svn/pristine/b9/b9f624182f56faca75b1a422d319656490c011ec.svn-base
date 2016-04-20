@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="Resource" table="resource">
+		<id name="id" type="java.lang.Long">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="name" column="name" type="java.lang.String" />
+		<property name="size" column="size" type="java.lang.Long" />
+		<property name="url" column="url" type="java.lang.String" />
+		<property name="intro" column="intro" type="java.lang.String" />
+		<property name="uploadTime" column="upload_time" type="java.lang.String" />
+		
+		<!-- 配置多对一关系,name值为Resource类的uploader属性,column为表的字段名 -->
+		<many-to-one name="uploader" column="uploader_id" not-null="true"/>
+	</class>
+</hibernate-mapping>

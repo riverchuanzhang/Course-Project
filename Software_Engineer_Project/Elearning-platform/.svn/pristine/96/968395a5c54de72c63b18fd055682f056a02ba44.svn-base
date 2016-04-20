@@ -1,0 +1,36 @@
+package da.kang.learning_platform.service;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+
+import da.kang.learning_platform.dao.NoteDao;
+import da.kang.learning_platform.orm.TransactionSupport;
+
+/**
+ * @author zdk
+ * 
+ */
+public class NoteManager implements TransactionSupport {
+	private NoteDao noteDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setNoteDao(NoteDao noteDao) {
+		this.noteDao = noteDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

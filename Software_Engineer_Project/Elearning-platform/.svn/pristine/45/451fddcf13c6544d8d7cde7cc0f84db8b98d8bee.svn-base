@@ -1,0 +1,17 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.UserDao;
+import da.kang.learning_platform.pojo.User;
+
+public class UserManager {
+	private UserDao userDao;
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public void save(User user) {
+		userDao.save(user);
+	}
+
+}

@@ -1,0 +1,64 @@
+package da.kang.learning_platform.service;
+
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+
+import da.kang.learning_platform.dao.UserDao;
+import da.kang.learning_platform.orm.TransactionSupport;
+import da.kang.learning_platform.pojo.User;
+
+public class UserManager implements TransactionSupport {
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+	private UserDao userDao;
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public void save(User user) {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			userDao.save(user);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		}
+	}
+
+	public User getUserByNameAndPassword(String userName, String password) {
+		User user = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			Criterion criterion = Restrictions.eq("userName", userName);
+			criterion = Restrictions.and(criterion,
+					Restrictions.eq("password", password));
+			user = userDao.findUnique(criterion);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		}
+		return user;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

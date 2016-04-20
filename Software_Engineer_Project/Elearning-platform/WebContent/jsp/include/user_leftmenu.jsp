@@ -1,0 +1,22 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<div id="leftmenu">
+	<div id="leftmenu_top">
+	</div>
+
+	<div id="leftmenu_main">
+
+		<h3>Links</h3>
+
+		<ul>
+			<li><a href="${ctx}/jsp/secure/user/info.jsp">信息</a></li>
+			<li><a href="${ctx}/question!listForUser.action">讨论</a></li>
+			<li><a href="${ctx}/paper!listForUser.action">练习</a></li>
+			<li><a href="${ctx}/learning_group!listForUser.action">群组</a></li>
+		</ul>
+	</div>
+
+
+	<div id="leftmenu_bottom">
+	</div>
+</div>

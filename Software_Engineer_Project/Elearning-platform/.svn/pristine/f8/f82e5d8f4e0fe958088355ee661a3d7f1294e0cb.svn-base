@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="Message" table="message">
+		<id name="id" type="java.lang.Long">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="title" column="title" type="java.lang.String" />
+		<property name="detail" column="detail" type="java.lang.String" />
+		<property name="sendTime" column="send_time" type="java.lang.String" />
+
+		<!--一对一,即通过多对一,多端改为一,使用unique="true" -->
+		<many-to-one name="sender" column="sender_id" unique="true"
+			not-null="true" />
+
+		<!-- 使用连接表的一对多,即通过多对多的某端改为一,使用unique="true" -->
+		<set name="receivers" table="message_receiver">
+			<key column="message_id" />
+			<many-to-many column="recevier_id" unique="true" class="User" />
+		</set>
+
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,23 @@
+package da.kang.learning_platform;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	BeanFactory beanFactory = new ClassPathXmlApplicationContext(
+				"spring.xml");
+		SessionFactory s = (SessionFactory) beanFactory
+				.getBean("sessionFactory");
+
+		System.out.println(s + "ss");
+        System.out.println( "Hello World!" );
+    }
+}

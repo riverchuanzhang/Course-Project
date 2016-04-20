@@ -1,0 +1,97 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script type="text/javascript">
+	$(function() {
+		//初始化弹出层,设置初始化后不弹出
+		$("#groupEditDiv").dialog({
+			autoOpen : false,
+			modal : true,
+			buttons : {
+				"添加" : function() {
+					//经过信息验证后提交
+					$("#editForm").submit();
+				},
+				"返回" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$("#addLearningGroup").button().click(function() {
+			$("#groupEditDiv").dialog("open");
+		});
+		$(".editLearningGroup").click(function() {
+			$("#groupEditDiv").dialog("open");
+		});
+	});
+
+	function initData(groupId, groupName, groupIntro, crateerId) {
+		$("#groupId").val(groupId);
+		$("#groupName").val(groupName);
+		$("#groupIntro").val(groupIntro);
+		$("#crateerId").val(crateerId);
+	}
+</script>
+</head>
+<body>
+	<div id="search_top">
+		<form action="${ctx}/learning_group!list.action">
+			<input type="text" name="filter_LIKES_name"
+				value="${param['filter_LIKES_name']}"> <input
+				type="checkbox" name="filter_EQL_creater.id"
+				value="${sessionScope.user.id}">拥有&nbsp; <input
+				type="checkbox" name="filter_EQL_users.id"
+				value="${sessionScope.user.id}">属于&nbsp; <input
+				type="submit" value="搜索" />
+		</form>
+		<a href="#" id="addLearningGroup"
+			onclick="initData('','','','${sessionScope.user.id}')">创建</a>
+	</div>
+
+	<div id="search_content">
+		<table>
+			<tr>
+				<th>组名</th>
+				<th>创建人</th>
+				<th>简介</th>
+				<th>操作</th>
+			</tr>
+			<s:iterator value="page.result">
+				<tr>
+					<td>${name}</td>
+					<td>${creater.userName}</td>
+					<td>${intro}</td>
+					<td><a
+						href="${ctx}/learning_group!delete.action?learningGroup.id=${id}">解散</a>&nbsp;
+						<a
+						href="${ctx}/learning_group!leaveGroup.action?learningGroup.id=${id}&member.id=${sessionScope.user.id}">离开</a>&nbsp;
+						<a class="editLearningGroup" href="#"
+						onclick="initData('${id}','${name}','${intro}','${creater.id}')">修改</a>
+						<a
+						href="${ctx}/learning_group!enterGroup.action?learningGroup.id=${id}&member.userName=${sessionScope.user.userName}">加入</a>
+					</td>
+				</tr>
+			</s:iterator>
+		</table>
+	</div>
+	<div id="groupEditDiv" title="填写">
+		<form action="${ctx}/learning_group!input.action" id="editForm">
+			<input style="display: none;" id="groupId" name="learningGroup.id">
+			<div class="form_row">
+				<label for="groupName">组名</label> <input id="groupName"
+					name="learningGroup.name" type="text">
+			</div>
+			<div class="form_row">
+				<label for="groupIntro">简介</label> <input id="groupIntro"
+					name="learningGroup.intro" type="text">
+			</div>
+			<input style="display: none;" id="createrId"
+				name="learningGroup.creater.id" value="${sessionScope.user.id}">
+		</form>
+	</div>
+</body>
+</html>

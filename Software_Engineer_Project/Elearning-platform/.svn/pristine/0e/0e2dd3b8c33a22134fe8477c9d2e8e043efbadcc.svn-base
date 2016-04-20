@@ -1,0 +1,10 @@
+package da.kang.learning_platform.dao;
+
+
+
+public class BaseDao {
+
+	public BaseDao() {
+		System.out.println("BaseDao");
+	}
+}

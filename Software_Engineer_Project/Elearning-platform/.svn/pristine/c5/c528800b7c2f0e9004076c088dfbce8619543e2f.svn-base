@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="LearningGroup" table="learning_group">
+		<id name="id" type="java.lang.Long">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="intro" column="intro" type="java.lang.String" />
+		<property name="name" column="name" type="java.lang.String" />
+
+		<!-- 使用连接表的一对多,即通过多对多的某端改为一,使用unique="true" -->
+		<set name="resources" table="learning_group_resource">
+			<key column="learning_group_id" />
+			<many-to-many column="resource_id" unique="true" class="Resource" />
+		</set>
+
+		<!-- 使用连接表的一对多,即通过多对多的某端改为一,使用unique="true" -->
+		<set name="questions" table="learning_group_question">
+			<key column="learning_group_id" />
+			<many-to-many column="question_id" unique="true" class="Question" />
+		</set>
+
+		<!-- 使用连接表的一对多,即通过多对多的某端改为一,使用unique="true" -->
+		<set name="papers" table="learning_group_paper">
+			<key column="learning_group_id" />
+			<many-to-many column="paper_id" unique="true" class="Paper" />
+		</set>
+
+		<!--组与用户,多对多 -->
+		<set name="users" table="learning_group_user">
+			<key column="learning_group_id" />
+			<many-to-many column="user_id" class="User" />
+		</set>
+
+		<!-- 多对一 -->
+		<many-to-one name="creater" column="creater_id" not-null="true"/>	
+			
+	</class>
+</hibernate-mapping>

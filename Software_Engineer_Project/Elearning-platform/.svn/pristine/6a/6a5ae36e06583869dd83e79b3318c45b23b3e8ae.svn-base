@@ -1,0 +1,13 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.AnswerDao;
+
+public class AnswerManager {
+	private AnswerDao answerDao;
+
+	public void setAnswerDao(AnswerDao answerDao) {
+		this.answerDao = answerDao;
+	}
+	
+
+}

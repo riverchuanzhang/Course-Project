@@ -1,0 +1,120 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="${ctx}/css/main-style.css" />
+<title>网上学习平台</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+
+<script type="text/javascript">
+	$(function() {
+		$("#editDiv").dialog({
+			autoOpen : false,
+			modal : true,
+			buttons : {
+				"保存" : function() {
+					//经过信息验证后提交
+					$("#editForm").submit();
+				},
+				"返回" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$("#addQuestion").button().click(function() {
+			$("#editDiv").dialog("open");
+		});
+
+		$(".editQuestion").button().click(function() {
+			$("#editDiv").dialog("open");
+		});
+	});
+
+	function initData(learningGroupId, createrId, questionId, questionTitle,
+			questionDetail) {
+		$("#learningGroupId").val(learningGroupId);
+		$("#createrId").val(createrId);
+		$("#questionId").val(questionId);
+		$("#questionTitle").val(questionTitle);
+		$("#learningGroupId").val(learningGroupId);
+		$("#questionDetail").val(questionDetail);
+
+	}
+</script>
+
+</head>
+
+<body>
+	<div id="container">
+		<%@ include file="/jsp/include/header.jsp"%>
+		<div id="menu">
+			<ul>
+				<li class="menuitem"><a href="#">群组</a></li>
+				<li class="menuitem"><a href="#">其他</a></li>
+			</ul>
+		</div>
+		<%@ include file="/jsp/include/lgroup_leftmenu.jsp"%>
+
+		<div id="content">
+			<div id="content_top"></div>
+
+
+
+			<div id="content_main">
+
+				<a id="addQuestion" href="#"
+					onclick="initData('${learningGroup.id}','${sessionScope.user.id}','','','')">添加</a>
+				<div id="question_list">
+					<table>
+						<tr>
+							<th>标题</th>
+							<th>创建人</th>
+							<th>时间</th>
+							<th>操作</th>
+						</tr>
+						<s:iterator value="page.result">
+							<tr>
+								<td>${title}</td>
+								<td>${creater.userName}</td>
+								<td>${createTime}</td>
+								<td><a
+									href="${ctx}/jsp/secure/answer!list.action?question.id=${id}">查看</a>&nbsp;
+									<a class="editQuestion" href="#"
+									onclick="initData('${learningGroup.id}','${creater.id}','${id}','${title}','${detail}')">编辑</a>&nbsp;</td>
+							</tr>
+						</s:iterator>
+					</table>
+				</div>
+				<div id="editDiv">
+					<form id="editForm" action="${ctx}/question!input.action" method="post">
+						<input style="display: none;" id="questionId" name="question.id">
+						<input style="display: none;" id="learningGroupId"
+							name="question.learningGroup.id"> <input style="display: none;"
+							id="createrId" name="question.creater.id">
+						<div class="form_row">
+							<label for="questionTitle">标题</label> <input id="questionTitle"
+								name="question.title" type="text">
+						</div>
+						<div class="form_row">
+							<label for="questionDetail">内容</label> <input id="questionDetail"
+								name="question.detail" type="text">
+						</div>
+					</form>
+				</div>
+
+
+			</div>
+
+
+			<div id="content_bottom"></div>
+			<%@ include file="/jsp/include/footer.jsp"%>
+
+		</div>
+	</div>
+</body>
+</html>

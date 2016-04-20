@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<script type="text/javascript">
+	$(function() {
+		//初始化弹出层,设置初始化后不弹出
+		$("#editDiv").dialog({
+			autoOpen : false,
+			modal : true,
+			buttons : {
+				"添加" : function() {
+					//经过信息验证后提交
+					$("#editForm").submit();
+				},
+				"返回" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$("#addGroupMember").button().click(function() {
+			$("#editDiv").dialog("open");
+		});
+	});
+</script>
+</head>
+<body>
+	<div>
+		<a href="#" id="addGroupMember">添加成员</a>
+	</div>
+	<div id="member_content">
+		<table>
+			<tr>
+				<th>名字</th>
+				<th>性别</th>
+				<th>操作</th>
+			</tr>
+			<s:iterator value="members">
+				<tr>
+					<td>${userName}</td>
+					<td>${sex}</td>
+					<td><a
+						href="${ctx}/learning_group!deleteMember.action?learningGroup.id=${learningGroup.id}&member.id=${id}">删除</a></td>
+				</tr>
+			</s:iterator>
+		</table>
+	</div>
+	<div id="editDiv" title="添加成员">
+		<form action="${ctx}/learning_group!inputMember.action" id="editForm">
+			<div class="form_row">
+				<label for="userName">成员名</label> <input id="memberName"
+					name="member.userName" type="text">
+			</div>
+			<input style="display: none;" name="learningGroup.id"
+				value="${learningGroup.id}">
+		</form>
+	</div>
+</body>
+</html>

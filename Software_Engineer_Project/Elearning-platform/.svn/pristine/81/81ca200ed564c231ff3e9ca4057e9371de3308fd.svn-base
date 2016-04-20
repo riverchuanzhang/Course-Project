@@ -1,0 +1,155 @@
+/**
+ * 
+ */
+package da.kang.learning_platform.web.action;
+
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.AppConstant;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.pojo.LearningGroup;
+import da.kang.learning_platform.pojo.User;
+import da.kang.learning_platform.service.LearningGroupManager;
+import da.kang.learning_platform.service.UserManager;
+
+/**
+ * @author zdk
+ * 
+ */
+public class LearningGroupAction extends ActionSupport {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1367481665666201769L;
+
+	// private Long id;
+
+	// private Long memberId;
+
+	private LearningGroup learningGroup;
+
+	private LearningGroupManager learningGroupManager;
+
+	private User member;
+
+	private Set<User> members;
+
+	private UserManager userManager;
+
+	private Page<LearningGroup> page = new Page<LearningGroup>(
+			AppConstant.DEFAULT_PAGE_SIZE);
+
+	public String list() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		List<PropertyFilter> filters = PropertyFilter
+				.buildFromHttpRequest(request);
+		if (!page.isOrderBySetted()) {// 设置默认排序方式
+			page.setOrderBy("name");
+			page.setOrder(Page.ASC);
+		}
+		page = learningGroupManager.findPage(page, filters);
+		return SUCCESS;
+	}
+
+	public String input() throws Exception {
+		// 名字不能为空
+		if (StringUtils.isEmpty(learningGroup.getName())) {
+			return ERROR;
+		}
+		//创建者，也是新群的用户
+		learningGroup.getUsers().add(learningGroup.getCreater());
+		learningGroupManager.save(learningGroup);
+		return list();
+	}
+
+	public String delete() throws Exception {
+		learningGroupManager.delete(learningGroup.getId());
+		return list();
+	}
+
+	public String listMember() throws Exception {
+		learningGroup = learningGroupManager.get(learningGroup.getId());
+		members = learningGroup.getUsers();
+		return "list-member";
+	}
+
+	public String deleteMember() throws Exception {
+		learningGroupManager
+				.deleteMember(learningGroup.getId(), member.getId());
+		return listMember();
+	}
+
+	public String inputMember() throws Exception {
+		member = userManager.get(member.getUserName());
+		learningGroupManager.addMember(learningGroup.getId(), member.getId());
+		return listMember();
+	}
+
+	public LearningGroupManager getLearningGroupManager() {
+		return learningGroupManager;
+	}
+
+	public void setLearningGroupManager(
+			LearningGroupManager learningGroupManager) {
+		this.learningGroupManager = learningGroupManager;
+	}
+
+	public Page<LearningGroup> getPage() {
+		return page;
+	}
+
+	public void setPage(Page<LearningGroup> page) {
+		this.page = page;
+	}
+
+	public LearningGroup getLearningGroup() {
+		return learningGroup;
+	}
+
+	public void setLearningGroup(LearningGroup learningGroup) {
+		this.learningGroup = learningGroup;
+	}
+
+	/*
+	 * public Long getId() { return id; }
+	 * 
+	 * public void setId(Long id) { this.id = id; }
+	 */
+
+	public Set<User> getMembers() {
+		return members;
+	}
+
+	public void setMembers(Set<User> members) {
+		this.members = members;
+	}
+
+	/*
+	 * public Long getMemberId() { return memberId; }
+	 * 
+	 * public void setMemberId(Long memberId) { this.memberId = memberId; }
+	 */
+
+	public User getMember() {
+		return member;
+	}
+
+	public void setMember(User member) {
+		this.member = member;
+	}
+
+	public void setUserManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
+
+}

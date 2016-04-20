@@ -1,0 +1,25 @@
+关联
+
+Paper与LearningGroup为多对一，设置双向关联,不使用连接表,用外键
+
+paper的hbm文件中：
+<!-- 多对一 -->
+<many-to-one name="learningGroup" column="learning_group_id" not-null="true" />
+注意：
+	不要设置级联删除,不然删除一个Paper,会把关联的LearningGroup删掉,
+并且假如LearningGroup的hbm文件也设置了级联删除,则要被删的LearningGroup,所关联的Paper也删除了,
+即其实只想删一个Paper,结果可能删掉了多个Paper
+	not-null="true",指这个paper表中的这个learning_group_id字段不能为空,必须有值
+	
+
+LearningGroup的hbm文件中：
+<list name="papers" inverse="true" cascade="all">
+			<key column="learning_group_id" not-null="true" />
+			<list-index column="id" />
+			<one-to-many class="Paper" />
+</list>
+注意：
+	inverse="true",true指不处理关系维护,交给另外一端维护。在这里,LearningGroup不会去维护与Paper的关系,
+即LearningGroup.getPapers().add(paper)。是不对关系产生影响,即不会去Paper表把对应的这个paper的learning_group_id修改。
+相反,paper.setLearningGroup(learningGroup);就会把这个paper对应的那个learning_group_id值修改
+	

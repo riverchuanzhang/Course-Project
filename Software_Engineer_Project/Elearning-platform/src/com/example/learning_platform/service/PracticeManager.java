@@ -1,0 +1,99 @@
+package com.example.learning_platform.service;
+
+import java.util.List;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.Assert;
+
+import com.example.learning_platform.dao.PracticeDao;
+import com.example.learning_platform.exception.AppException;
+import com.example.learning_platform.exception.ExceptionInfo;
+import com.example.learning_platform.exception.Status;
+import com.example.learning_platform.orm.Page;
+import com.example.learning_platform.orm.PropertyFilter;
+import com.example.learning_platform.orm.TransactionSupport;
+import com.example.learning_platform.pojo.Practice;
+import com.example.learning_platform.pojo.Topic;
+
+
+/**
+ * @author zdc
+ * 
+ */
+public class PracticeManager implements TransactionSupport {
+	private PracticeDao practiceDao;
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+	
+	public Practice get(Long practiceId) throws AppException {
+		Practice practice = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			practice = practiceDao.get(practiceId);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return practice;
+	}
+
+	/**
+	 * 保存或修改
+	 */
+	public void save(Practice practice) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			practiceDao.save(practice);
+			practiceDao.getSession().clear();
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}
+	}
+	
+	/**
+	 * 分页
+	 */
+	public Page<Practice> findPage(final Page<Practice> page,
+			final List<PropertyFilter> filters)
+			throws AppException {
+		Page<Practice> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			result = practiceDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	public void setPracticeDao(PracticeDao practiceDao) {
+		this.practiceDao = practiceDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

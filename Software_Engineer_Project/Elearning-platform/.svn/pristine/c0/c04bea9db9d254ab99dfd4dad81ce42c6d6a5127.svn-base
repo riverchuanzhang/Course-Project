@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- <constant name="struts.configuration.xml.reload" value="true" /> <constant 
+		name="struts.action.extension" value="action,do,webwork" /> <constant name="struts.enable.DynamicMethodInvocation" 
+		value="true" /> <constant name="struts.devMode" value="true" /> <constant 
+		name="struts.multipart.maxSize" value="100971520"></constant> <constant name="struts.i18n.encoding" 
+		value="UTF-8"></constant> <constant name="struts.objectFactory.spring.autoWire" 
+		value="name"></constant> 将struts2交给spring管理 <constant name="struts.objectFactory" 
+		value="spring"></constant> <constant name="struts.custom.i18n.resources" 
+		value="messages"></constant> <include file="strutsConfig/common.xml"></include> 
+		<include file="strutsConfig/struts-test.xml"></include> <include file="strutsConfig/struts-admin.xml"></include> 
+		<include file="strutsConfig/struts-web.xml"></include> <include file="strutsConfig/struts-admin.xml"></include> 
+		<include file="strutsConfig/struts-consumer.xml"></include> <include file="strutsConfig/struts-restaurant.xml"></include> 
+		<include file="strutsConfig/struts-web.xml"></include> -->
+
+	<!--struts在默认配置下对任何提交到action的参数强制需要setter方法,我这里改为false,但是失效 -->
+	<constant name="struts.devMode" value="false" />
+
+	<!-- 将struts2的对象交给spring管理。其实这个常量不必添加,因为在引入 struts2-spring-plugins在它的配置文件中就已经添加上去了 -->
+	<constant name="struts.objectFactory" value="spring"></constant>
+
+	<package namespace="/" name="learning_platform" extends="struts-default">
+
+		<action name="test" class="da.kang.learning_platform.web.action.TestAction">
+			<result name="success">/index.jsp</result>
+			<result name="error">/jsp/common/500.jsp</result>
+		</action>
+		<action name="user" class="da.kang.learning_platform.web.action.UserAction">
+			<result name="lgroup-member">/jsp/secure/lgroup/member.jsp</result>
+			<result name="user-info" type="redirect">/jsp/secure/user/info.jsp
+			</result>
+			<result name="index" type="redirect">/index.jsp
+			</result>
+			<result name="error">/jsp/common/error.jsp</result>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+		<action name="learning_group"
+			class="da.kang.learning_platform.web.action.LearningGroupAction">
+			<result name="user-lgroup">/jsp/secure/user/lgroup.jsp</result>
+			<result name="home">/jsp/secure2/lgroup_template.jsp</result>
+			<result name="lgroup-info">/jsp/secure/lgroup/info.jsp</result>
+			<result name="user-search_lgroup">/jsp/secure/user/search_lgroup.jsp</result>
+			
+			<result name="lgroup-member">/jsp/secure2/lgroup-member.jsp</result>
+
+			<result name="index" type="redirect">/index.jsp</result>
+
+			<result name="success">/jsp/secure/learning_group-list.jsp</result>
+
+			<result name="error">/jsp/common/error.jsp</result>
+
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+		<!-- 问题 -->
+		<action name="question"
+			class="da.kang.learning_platform.web.action.QuestionAction">
+			<result name="lgroup-question_list">/jsp/secure/lgroup/question_list.jsp</result>
+			<result name="lgroup-question_edit">/jsp/secure/lgroup/question_edit.jsp</result>
+			<result name="user-discuss">/jsp/secure/user/discuss.jsp</result>
+			<result name="index" type="redirect">/index.jsp</result>
+			<result name="error">/jsp/common/error.jsp</result>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+		<!-- 答案 -->
+		<action name="answer"
+			class="da.kang.learning_platform.web.action.AnswerAction">
+			<result name="lgroup-discuss_answer">/jsp/secure2/lgroup-discuss_answer.jsp</result>
+			<!-- 转到question的Action,但无法指定执行哪个方法,只能修改它的默认方法 -->
+			<result name="user-discuss" type="chain">question</result>
+			<result name="lgroup-answer">/jsp/secure/lgroup/answer.jsp</result>
+			<result name="error">/jsp/common/error.jsp</result>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+		<!-- 试卷 -->
+		<action name="paper" class="da.kang.learning_platform.web.action.PaperAction"
+			method="listForUser">
+			<result name="user-practice">/jsp/secure/user/practice.jsp</result>
+			<result name="index" type="redirect">/index.jsp</result>
+
+			<result name="lgroup-paper_list">/jsp/secure/lgroup/paper_list.jsp</result>
+
+			<result name="lgroup-paper_edit">/jsp/secure2/lgroup-paper_edit.jsp</result>
+			<result name="lgroup-paper_do">/jsp/secure2/lgroup-paper_do.jsp</result>
+			<result name="error">/jsp/common/error.jsp</result>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+
+		<!-- 习题 -->
+		<action name="topic" class="da.kang.learning_platform.web.action.TopicAction">
+			<result name="lgroup-practice">/jsp/secure/lgroup/practice.jsp</result>
+
+
+			<result name="lgroup-paper_topic">/jsp/secure2/lgroup-paper_topic.jsp</result>
+
+			<result name="lgroup-topic_edit">/jsp/secure/lgroup/topic_edit.jsp</result>
+
+			<result name="error">/jsp/common/error.jsp</result>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</action>
+	</package>
+</struts>

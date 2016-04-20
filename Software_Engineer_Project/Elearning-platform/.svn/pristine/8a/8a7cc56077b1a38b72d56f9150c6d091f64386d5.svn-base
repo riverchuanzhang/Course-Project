@@ -1,0 +1,57 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="${ctx}/css/main-style.css" />
+<title>网上学习平台</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+<script type="text/javascript">
+	$(function() {
+		$("#content_main_tabs").tabs({
+			beforeLoad : function(event, ui) {
+				ui.jqXHR.error(function() {
+					ui.panel.html("加载失败,请稍后再尝试");
+				});
+			}
+
+		});
+	});
+</script>
+</head>
+<body>
+	<div id="container">
+		<%@ include file="/jsp/include/header.jsp"%>
+		<div id="menu">
+			<ul>
+				<li class="menuitem"><a href="#">个人</a></li>
+				<li class="menuitem"><a href="#">其他</a></li>
+			</ul>
+		</div>
+		<%@ include file="/jsp/include/user_leftmenu.jsp"%>
+
+		<div id="content">
+			<div id="content_top"></div>
+			<div id="content_main">
+				<div id="content_main_tabs">
+					<ul>
+						<li><a href="#tab_question">我的提问</a></li>
+						<li><a href="#tab_answer">我的回答</a></li>
+					</ul>
+					<div id="tab_question">
+						<h2>我的提问</h2>
+					</div>
+					<div id="tab_answer">
+						<h2>我的回答</h2>
+					</div>
+				</div>
+			</div>
+			<div id="content_bottom"></div>
+
+			<%@ include file="/jsp/include/footer.jsp"%>
+
+		</div>
+	</div>
+</body>
+</html>

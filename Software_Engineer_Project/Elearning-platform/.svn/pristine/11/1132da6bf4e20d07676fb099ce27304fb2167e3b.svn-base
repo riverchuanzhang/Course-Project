@@ -1,0 +1,7 @@
+package da.kang.learning_platform.dao;
+
+import da.kang.learning_platform.orm.hibernate.HibernateDao;
+
+public class AnswerDao extends HibernateDao<AnswerDao,Long> {
+
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="Answer" table="answer">
+		<id name="id" type="java.lang.Long">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="detail" column="detail" type="java.lang.String" />
+		<property name="createTime" column="create_time" type="java.lang.String" />
+
+		<!-- 多对一 -->
+		<many-to-one name="creater" column="creater_id" not-null="true"/>
+
+		<many-to-one name="question" column="question_id"
+			not-null="true" />
+	</class>
+
+</hibernate-mapping>

@@ -1,0 +1,67 @@
+package da.kang.learning_platform.pojo;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Message implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3280502708082075762L;
+	private Long id;
+	private String title;
+	private String detail;
+	private String sendTime;
+	private User sender;
+	private Set<User> receivers = new HashSet<>();
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+	public String getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(String sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public User getSender() {
+		return sender;
+	}
+
+	public void setSender(User sender) {
+		this.sender = sender;
+	}
+
+	public Set<User> getReceivers() {
+		return receivers;
+	}
+
+	public void setReceivers(Set<User> receivers) {
+		this.receivers = receivers;
+	}
+
+}

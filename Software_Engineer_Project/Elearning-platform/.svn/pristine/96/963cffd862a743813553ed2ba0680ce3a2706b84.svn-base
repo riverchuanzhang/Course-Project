@@ -1,0 +1,94 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>学习组成员</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+<script>
+	//把tab标签页竖直显示。其原理就是对ul，li的css样式做改变  
+	//我们可以参考例子所带的css，效果还可以。  
+	$(function() {
+		$("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+		$("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+	});
+</script>
+<style>
+.ui-tabs-vertical {
+	width: 55em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav {
+	padding: .2em .1em .2em .2em;
+	float: left;
+	width: 12em;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li {
+	clear: left;
+	width: 100%;
+	border-bottom-width: 1px !important;
+	border-right-width: 0 !important;
+	margin: 0 -1px .2em 0;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li a {
+	display: block;
+}
+
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
+	padding-bottom: 0;
+	padding-right: .1em;
+	border-right-width: 1px;
+	border-right-width: 1px;
+}
+
+.ui-tabs-vertical .ui-tabs-panel {
+	padding: 1em;
+	float: right;
+	width: 40em;
+}
+</style>
+
+</head>
+<body>
+
+	<div class="demo">
+
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">tab1 菜单</a></li>
+				<li><a href="#tabs-2">tab2 菜单</a></li>
+				<li><a href="#tabs-3">tab3 菜单</a></li>
+			</ul>
+			<div id="tabs-1">
+				<h2>tab1 菜单的题头</h2>
+				<p>tab1 菜单的内容。。。</p>
+			</div>
+			<div id="tabs-2">
+				<h2>tab2 菜单的题头</h2>
+				<p>tab2 菜单的内容。。。</p>
+			</div>
+			<div id="tabs-3">
+				<h2>tab3 菜单的题头</h2>
+				<p>tab3 菜单的内容。。。</p>
+			</div>
+		</div>
+
+	</div>
+	<!-- End demo -->
+
+
+
+	<div class="demo-description">
+		<p>
+			竖直的tab标签页效果。<br> //把tab标签页竖直显示。其原理就是对ul，li的css样式做改变
+			//我们可以参考例子所带的css，效果还可以。
+		</p>
+	</div>
+	<!-- End demo-description -->
+
+</body>
+</html>

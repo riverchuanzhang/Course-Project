@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<html>
+<head>
+<title>学习组成员</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+<script type="text/javascript">
+	$(function() {
+		$("#learning_group_taabs").tabs({
+			beforeLoad : function(event, ui) {
+				ui.jqXHR.error(function() {
+					ui.panel.html("加载失败,请稍后再尝试");
+				});
+			},
+
+		});
+	});
+</script>
+</head>
+<body>
+	我是模板
+	<div id="learning_group_taabs">
+		<ul>
+			<li><a
+				href="${ctx}/learning_group!listForMember.action?member.id=${sessionScope.user.id}">查看</a></li>
+			<li><a href="#learning_group_tabs-note">管理</a></li>
+		</ul>
+		<div id="learning_group_tabs-note">我是管理的内容</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.PracticeDao;
+
+/**
+ * @author zdk
+ * 
+ */
+public class PracticeManager {
+	private PracticeDao practiceDao;
+
+	public void setPracticeDao(PracticeDao practiceDao) {
+		this.practiceDao = practiceDao;
+	}
+
+}

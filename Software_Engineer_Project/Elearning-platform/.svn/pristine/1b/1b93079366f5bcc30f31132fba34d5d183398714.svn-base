@@ -1,0 +1,26 @@
+package da.kang.learning_platform.pojo;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+public class IdEntity {
+	protected String uuid = null;
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		if (StringUtils.isEmpty(uuid)) {// 为了解决从页面获取uuid为空时，始终未空字符串，以致把新增操作变为更新操作
+			this.uuid = null;
+		} else {
+			this.uuid = uuid;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
+	
+}

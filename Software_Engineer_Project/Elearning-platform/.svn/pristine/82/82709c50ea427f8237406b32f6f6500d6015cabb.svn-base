@@ -1,0 +1,20 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+
+
+<div id="header">
+	<h1>
+		学习<span class="off">平台</span>
+	</h1>
+	<h2>
+		<c:if test="${not empty user}">
+			<a href="${ctx}/jsp/secure/user/info.jsp">${user.userName}</a>&nbsp;&nbsp;
+			<a href="${ctx}/learning_group!listForSearch.action">搜群</a>
+			<a href="${ctx}/user!logout.action">注销</a>
+		</c:if>
+		<c:if test="${empty user}">
+			<a href="${ctx}/jsp/unsecure/login.jsp">登录</a>&nbsp;&nbsp;
+	<a href="${ctx}/jsp/unsecure/register.jsp">注册</a>&nbsp;&nbsp;
+</c:if>
+	</h2>
+</div>

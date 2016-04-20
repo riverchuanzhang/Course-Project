@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="${ctx}/css/main-style.css" />
+<title>网上学习平台</title>
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+<script type="text/javascript">
+	$(function() {
+		$("#editDiv").dialog({
+			autoOpen : false,
+			modal : true,
+			buttons : {
+				"保存" : function() {
+					//经过信息验证后提交
+					$("#editForm").submit();
+				},
+				"返回" : function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+
+		$("#addPaper").button().click(function() {
+			$("#editDiv").dialog("open");
+		});
+	});
+
+	function initData(learningGroupId, createrId, paperId, paperTilte,
+			paperIntro) {
+		$("#learningGroupId").val(learningGroupId);
+		$("#createrId").val(createrId);
+		$("#paperId").val(paperId);
+		$("#paperTilte").val(paperTilte);
+		$("#paperIntro").val(paperIntro);
+
+	}
+</script>
+</head>
+
+<body>
+	<div id="container">
+		<%@ include file="/jsp/include/header.jsp"%>
+		<div id="menu">
+			<ul>
+				<li class="menuitem"><a href="#">群组</a></li>
+				<li class="menuitem"><a href="#">其他</a></li>
+			</ul>
+		</div>
+		<%@ include file="/jsp/include/lgroup_leftmenu.jsp"%>
+
+		<div id="content">
+			<div id="content_top"></div>
+
+			<div id="content_main">
+			
+				<h2>试卷</h2>
+				
+				<a id="addPaper" href="#"
+					onclick="initData('${learningGroup.id}','${sessionScope.user.id}','','','')">添加</a>
+				<div id="paper_content">
+					<table>
+						<tr>
+							<th>标题</th>
+							<th>简介</th>
+							<th>创建人</th>
+							<th>操作</th>
+						</tr>
+						<s:iterator value="page.result">
+							<tr>
+								<td>${title}</td>
+								<td>${intro}</td>
+								<td>${creater.userName}</td>
+								<td><a href="${ctx}/topic!listForPaper.action?paper.id=${id}">进入</a>&nbsp;
+								<a href="${ctx}/topic!editForPaper.action?paper.id=${id}">编辑</a>&nbsp;
+								</td>
+							</tr>
+						</s:iterator>
+					</table>
+				</div>
+				<div id="editDiv">
+					<form id="editForm" action="${ctx}/paper!input.action"
+						method="post">
+						<input style="display: none;" id="paperId" name="paper.id">
+						<input style="display: none;" id="learningGroupId"
+							name="paper.learningGroup.id"> <input
+							style="display: none;" id="createrId" name="paper.creater.id">
+						<div class="form_row">
+							<label for="paperTitle">标题</label> <input id="paperTitle"
+								name="paper.title" type="text">
+						</div>
+						<div class="form_row">
+							<label for="paperIntro">内容</label> <input id="paperIntro"
+								name="paper.intro" type="text">
+						</div>
+					</form>
+				</div>
+
+			</div>
+
+
+			<div id="content_bottom"></div>
+			<%@ include file="/jsp/include/footer.jsp"%>
+
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package da.kang.learning_platform.exception;
+
+/**
+ * @author zdk
+ *
+ */
+public class ExceptionInfo {
+	public class Type{
+		 /**未知*/
+		 public static final String UNKNOWN = "unknown";
+		 
+		 
+		 //操作数据库
+		 
+		 /**保存操作*/
+		 public static final String DB_SAVE = "save";
+		 
+		 /**其他操作*/
+		 public static final String DB_OTHERS = "others";
+		 
+		
+	}
+	
+
+}

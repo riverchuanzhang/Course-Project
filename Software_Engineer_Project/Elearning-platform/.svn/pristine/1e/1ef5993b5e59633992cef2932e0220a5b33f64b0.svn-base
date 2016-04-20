@@ -1,0 +1,127 @@
+/**
+ * 
+ */
+package da.kang.learning_platform.web.action;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.AppConstant;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.pojo.LearningGroup;
+import da.kang.learning_platform.pojo.Paper;
+import da.kang.learning_platform.service.LearningGroupManager;
+import da.kang.learning_platform.service.PaperManager;
+
+/**
+ * @author zdk
+ * 
+ */
+public class PaperAction extends ActionSupport {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3516823792684881743L;
+
+	private Paper paper;
+	private LearningGroup learningGroup;
+	private LearningGroupManager learningGroupManager;
+
+	private PaperManager paperManager;
+
+	private Page<Paper> page = new Page<Paper>(AppConstant.DEFAULT_PAGE_SIZE);
+
+	/**
+	 * 
+	 * 对某个群组,进行查询试卷分页
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String listForLQroup() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		List<PropertyFilter> filters = PropertyFilter
+				.buildFromHttpRequest(request);
+		if (!page.isOrderBySetted()) {// 设置默认排序方式
+			page.setOrderBy("title");
+			page.setOrder(Page.ASC);
+		}
+		learningGroup = learningGroupManager.get(learningGroup.getId());
+		page = paperManager.findPage(page, filters, learningGroup.getId());
+		return "lgroup-paper_list";
+	}
+
+	/**
+	 * 
+	 * 添加试卷
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String input() throws Exception {
+		learningGroup = paper.getLearningGroup();
+		paperManager.save(paper);
+		return listForLQroup();
+	}
+
+	/**
+	 * 
+	 * 删除试卷
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String delete() throws Exception {
+		learningGroup = paper.getLearningGroup();
+		paperManager.delete(paper.getId());
+		return listForLQroup();
+	}
+
+	public Paper getPaper() {
+		return paper;
+	}
+
+	public void setPaper(Paper paper) {
+		this.paper = paper;
+	}
+
+	public LearningGroup getLearningGroup() {
+		return learningGroup;
+	}
+
+	public void setLearningGroup(LearningGroup learningGroup) {
+		this.learningGroup = learningGroup;
+	}
+
+	public LearningGroupManager getLearningGroupManager() {
+		return learningGroupManager;
+	}
+
+	public void setLearningGroupManager(LearningGroupManager learningGroupManager) {
+		this.learningGroupManager = learningGroupManager;
+	}
+
+	public PaperManager getPaperManager() {
+		return paperManager;
+	}
+
+	public void setPaperManager(PaperManager paperManager) {
+		this.paperManager = paperManager;
+	}
+
+	public Page<Paper> getPage() {
+		return page;
+	}
+
+	public void setPage(Page<Paper> page) {
+		this.page = page;
+	}
+
+}

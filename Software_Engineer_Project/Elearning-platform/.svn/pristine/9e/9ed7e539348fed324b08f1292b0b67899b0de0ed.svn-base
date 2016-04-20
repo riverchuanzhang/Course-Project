@@ -1,0 +1,192 @@
+package da.kang.learning_platform.web.action;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.AppConstant;
+import da.kang.learning_platform.exception.AppException;
+import da.kang.learning_platform.exception.ExceptionInfo;
+import da.kang.learning_platform.exception.Status;
+import da.kang.learning_platform.orm.Page;
+import da.kang.learning_platform.orm.PropertyFilter;
+import da.kang.learning_platform.pojo.LearningGroup;
+import da.kang.learning_platform.pojo.Question;
+import da.kang.learning_platform.pojo.User;
+import da.kang.learning_platform.service.UserManager;
+
+public class UserAction extends ActionSupport {
+	private static final long serialVersionUID = 1L;
+
+	private UserManager userManager;
+	private User user;
+
+	private String errorMsg="msg";
+	
+	private Page<Question> page = new Page<Question>(
+			AppConstant.DEFAULT_PAGE_SIZE);
+	
+	private LearningGroup learningGroup;
+
+	@Override
+	public String execute() throws Exception {
+		try {
+			System.out.println("execute()");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return super.execute();
+	}
+	
+	
+	public String update() throws Exception {
+		
+		
+		return SUCCESS;
+	}
+
+	/**
+	 * 注册
+	 * 
+	 */
+	public String register() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		// 已经登录,不能注册
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			User loginedUser = (User) session.getAttribute("user");
+			if (loginedUser != null) {
+				errorMsg="已经登录,无法注册";
+				return ERROR;
+			}
+		}
+		// 验证提交信息,用户名和密码必填
+		if (StringUtils.isEmpty(user.getUserName())
+				|| StringUtils.isEmpty(user.getPassword())) {
+			errorMsg="用户名或密码为空";
+			return ERROR;
+		}
+		try {
+			// 保存用户
+			userManager.save(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+			errorMsg="保存用户失败";
+			throw new AppException(new Status(ExceptionInfo.Type.ACTION_LOGIN,
+					errorMsg, e));
+			
+		}
+		return SUCCESS;
+	}
+
+	/**
+	 * 登录
+	 */
+	public String login() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession(false);
+		if (session != null) {// 验证是否已经登录
+			User loginedUser = (User) session.getAttribute("user");
+			if (loginedUser != null) {
+				errorMsg = "已经登录";
+				return ERROR;
+			}
+		}
+		if (StringUtils.isEmpty(user.getUserName())
+				|| StringUtils.isEmpty(user.getPassword())) {
+			errorMsg = "用户名或密码为空";
+			return ERROR;
+		}
+		try {
+			user = userManager.getUserByNameAndPassword(user.getUserName(),
+					user.getPassword());
+		} catch (AppException e) {
+			errorMsg = "获取用户失败";
+			throw new AppException(new Status(ExceptionInfo.Type.ACTION_LOGIN,
+					errorMsg, e));
+		}
+
+		if (user == null) {
+			errorMsg = "没有此用户";
+			return ERROR;
+		} else {
+			HttpSession s = request.getSession();
+			s.setAttribute("user", user);
+		}
+		return "user-info";
+	}
+
+	/**
+	 * 注销
+	 */
+	public String logout() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			errorMsg = "没有访问过该网站";
+			throw new AppException(new Status(ExceptionInfo.Type.ACTION_LOGOUT,
+					errorMsg));
+		}
+		User user = (User) session.getAttribute("user");
+		if (user == null) {
+			errorMsg = "没有登录";
+			throw new AppException(new Status(ExceptionInfo.Type.ACTION_LOGOUT,
+					errorMsg));
+		} else {
+			session.removeAttribute("user");
+		}
+		return SUCCESS;
+	}
+	
+
+	public String test() throws Exception {
+		throw new AppException(new Status("S", "SF"));
+	}
+
+	public void setUserManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getMsg() {
+		return errorMsg;
+	}
+
+	public void setMsg(String msg) {
+		this.errorMsg = msg;
+	}
+
+
+	public Page<Question> getPage() {
+		return page;
+	}
+
+
+	public void setPage(Page<Question> page) {
+		this.page = page;
+	}
+
+
+	public LearningGroup getLearningGroup() {
+		return learningGroup;
+	}
+
+
+	public void setLearningGroup(LearningGroup learningGroup) {
+		this.learningGroup = learningGroup;
+	}
+
+}

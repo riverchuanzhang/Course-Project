@@ -1,0 +1,54 @@
+/**
+ * 
+ */
+package da.kang.learning_platform.exception;
+
+/**
+ * @author zdk
+ * 
+ */
+public class Status {
+	private String type = ExceptionInfo.Type.UNKNOWN;// 异常类型,默认是未知
+	private String message;// 异常错误信息
+	private Throwable cause;// 来源异常
+
+	
+	
+	public Status(String type, String message) {
+		this(type, message, null);
+	}
+	
+	public Status(String type, Throwable cause) {
+		this(type, null, cause);
+	}
+
+	public Status(String type, String message, Throwable cause) {
+		this.type = type;
+		this.message = message;
+		this.cause = cause;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Throwable getCause() {
+		return cause;
+	}
+
+	public void setCause(Throwable cause) {
+		this.cause = cause;
+	}
+}

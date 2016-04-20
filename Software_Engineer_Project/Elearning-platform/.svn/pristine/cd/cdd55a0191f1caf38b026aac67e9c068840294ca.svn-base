@@ -1,0 +1,70 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>学习组成员</title>
+<link rel="stylesheet" type="text/css" href="${ctx}/css/main-style.css" />
+<%@ include file="/jsp/common/meta.jsp"%>
+<%@ include file="/jsp/common/jquery-ui.jsp"%>
+</head>
+<body>
+	<div id="container">
+		<%@ include file="/jsp/include/header.jsp"%>
+		<%@ include file="/jsp/include/lgroup_menu.jsp"%>
+		<%@ include file="/jsp/include/lgroup_leftmenu.jsp"%>
+
+		<div id="content">
+			<div id="content_top"></div>
+
+
+			<div id="content_main">
+				<div id="search_member">
+					<form action="${ctx}/user!listForLGroup.action">
+						<input type="text" name="learningGroup.id"
+							value="${learningGroup.id}" style="display: none;"> <input
+							type="text" name="filter_LIKES_userName"
+							value="${param['filter_LIKES_userName']}"> <input
+							type="submit" value="搜索" />
+					</form>
+				</div>
+				<div id="content_member">
+					<table>
+						<tr>
+							<th>名字</th>
+							<th>性别</th>
+							<c:if test="${learningGroup.creater.id==sessionScope.user.id}">
+								<th>操作</th>
+							</c:if>
+
+						</tr>
+						<s:iterator value="page.result">
+							<tr>
+								<td>${userName}</td>
+								<td>${sex}</td>
+								<td><c:if
+										test="${learningGroup.creater.id==sessionScope.user.id}">
+										<c:if test="${id!=learningGroup.creater.id}">
+											<a
+												href="${ctx}/learning_group!deleteMember.action?learningGroup.id=${learningGroup.id}&member.id=${id}">删除</a>
+										</c:if>
+										<c:if test="${id==learningGroup.creater.id}">
+											<label>不能删除</label>
+										</c:if>
+									</c:if></td>
+							</tr>
+						</s:iterator>
+					</table>
+				</div>
+
+			</div>
+
+			<div id="content_bottom"></div>
+			<%@ include file="/jsp/include/footer.jsp"%>
+
+		</div>
+	</div>
+
+</body>
+</html>

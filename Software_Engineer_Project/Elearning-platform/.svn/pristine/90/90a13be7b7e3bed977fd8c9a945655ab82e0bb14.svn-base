@@ -1,0 +1,77 @@
+package da.kang.learning_platform.web.action;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+
+import com.opensymphony.xwork2.ActionSupport;
+
+import da.kang.learning_platform.pojo.Role;
+import da.kang.learning_platform.pojo.User;
+import da.kang.learning_platform.service.UserManager;
+
+public class UserAction extends ActionSupport {
+	private static final long serialVersionUID = 1L;
+
+	private UserManager userManager;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	@Override
+	public String execute() throws Exception {
+		try {
+			save();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return super.execute();
+	}
+
+	private void save() {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		if(status.isCompleted()){
+			System.out.println("completed");
+		}else{
+			System.out.println("no completed");
+		}
+		try {
+			Role role=new Role();
+			role.setName("ss");
+			
+			User user = new User();
+			user.setUserName("name1");
+			user.setSex(1);
+			user.setEmail("email1");
+			user.setRegisterTime("2012");
+			
+			user.getRoles().add(role);
+			
+			userManager.save(user);
+			transactionManager.commit(status);
+			System.out.println("save()");
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			
+		}
+
+	}
+
+	public void setUserManager(UserManager userManager) {
+		this.userManager = userManager;
+	}
+
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

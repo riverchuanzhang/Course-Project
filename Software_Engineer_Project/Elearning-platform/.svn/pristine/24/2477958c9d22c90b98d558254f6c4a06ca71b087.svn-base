@@ -1,0 +1,37 @@
+/**
+ * 
+ */
+package da.kang.learning_platform.exception;
+
+/**
+ * @author zdk
+ *
+ */
+public class ExceptionInfo {
+	public class Type{
+		 /**未知*/
+		 public static final String UNKNOWN = "unknown";
+		 
+		 //操作数据库
+		 
+		 /**保存操作*/
+		 public static final String DB_SAVE = "db_save";
+		 
+		 /**搜索操作*/
+		 public static final String DB_SEARCH = "db_search";
+		 
+		 /**其他操作*/
+		 public static final String DB_OTHERS = "db_others";
+		 
+		 
+		 //页面Action中的
+		 public static final String ACTION_LOGIN = "action_login";
+		 public static final String ACTION_LOGOUT = "action_logout";
+		 public static final String ACTION_SAVE = "action_save";
+		 public static final String ACTION_OTHERS = "action_others";
+		 
+		
+	}
+	
+
+}

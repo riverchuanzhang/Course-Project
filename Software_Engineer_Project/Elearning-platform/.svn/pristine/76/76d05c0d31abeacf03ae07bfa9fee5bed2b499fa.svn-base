@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+loginput{
+	width:180px;
+}
+
+.form_row{
+	margin-bottom:6px;
+}
+
+th{
+	text-align:center;
+	width:200px;
+}
+
+td{
+	text-align:center;	
+}
+
+.h2_style{
+	margin-left:250px;
+	margin-bottom:20px;
+}
+
+#groupEditDiv{
+	margin-left:200px;	
+}

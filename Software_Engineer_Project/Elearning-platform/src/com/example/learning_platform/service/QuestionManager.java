@@ -1,0 +1,174 @@
+package com.example.learning_platform.service;
+
+import java.util.List;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+
+import com.example.learning_platform.dao.LearningGroupDao;
+import com.example.learning_platform.dao.QuestionDao;
+import com.example.learning_platform.exception.AppException;
+import com.example.learning_platform.exception.ExceptionInfo;
+import com.example.learning_platform.exception.Status;
+import com.example.learning_platform.orm.Page;
+import com.example.learning_platform.orm.PropertyFilter;
+import com.example.learning_platform.orm.TransactionSupport;
+import com.example.learning_platform.pojo.Question;
+
+
+public class QuestionManager implements TransactionSupport {
+	private QuestionDao questionDao;
+
+	private LearningGroupDao learningGroupDao;
+
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public Question get(Long id) throws AppException {
+		Question question = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			question = questionDao.get(id);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return question;
+	}
+
+	/**
+	 * 添加问题
+	 */
+	public Question save(Question question) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			questionDao.save(question);
+			questionDao.getSession().clear();
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SAVE, e));
+		}
+		return question;
+	}
+
+	/*	*//**
+	 * 不使用级联 先添加实体数据，再添加中间表数据
+	 */
+	/*
+	 * public Question save(Question question, Long groupId) throws AppException
+	 * { TransactionStatus status = transactionManager
+	 * .getTransaction(transactionDefinition); LearningGroup learningGroup =
+	 * null; try { questionDao.save(question);//保存问题
+	 * transactionManager.commit(status); } catch (Exception e) {
+	 * e.printStackTrace(); transactionManager.rollback(status); throw new
+	 * AppException(new Status(ExceptionInfo.Type.DB_SAVE, e)); } return
+	 * question; }
+	 */
+
+	/**
+	 * 不使用级联 先删除中间表数据,实体数据，再添加中间表数据
+	 */
+	public void delete(Long questionId) throws AppException {
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			questionDao.delete(questionId);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_DELETE, e));
+		}
+	}
+
+	/*	*//**
+	 * 先删除中间表数据,再删除多端中的实体数据
+	 */
+	/*
+	 * public void delete(Long questionId, Long groupId) throws AppException {
+	 * TransactionStatus status = transactionManager
+	 * .getTransaction(transactionDefinition); try {
+	 *//** 先删除关系 */
+	/*
+	 * LearningGroup learningGroup = learningGroupDao.get(groupId);
+	 * Set<Question> questions=learningGroup.getQuestions(); for(Question
+	 * question:questions){ if(question.getId().equals(questionId)){
+	 * questions.remove(question); } }
+	 *//** 再删除实体数据 */
+	/*
+	 * questionDao.delete(questionId); transactionManager.commit(status); }
+	 * catch (Exception e) { e.printStackTrace();
+	 * transactionManager.rollback(status); throw new AppException(new
+	 * Status(ExceptionInfo.Type.DB_DELETE, e)); } }
+	 */
+
+	/**
+	 * 查询分页
+	 */
+	public Page<Question> findPage(final Page<Question> page,
+			final List<PropertyFilter> filters) throws AppException {
+		Page<Question> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			result = questionDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	/**
+	 * 对某个群组,查询问题分页
+	 */
+	public Page<Question> findPage(final Page<Question> page,
+			final List<PropertyFilter> filters, Long learningGroupId)
+			throws AppException {
+		Page<Question> result = null;
+		TransactionStatus status = transactionManager
+				.getTransaction(transactionDefinition);
+		try {
+			filters.add(new PropertyFilter("EQL_learningGroup.id", learningGroupId + ""));
+			result = questionDao.findPage(page, filters);
+			transactionManager.commit(status);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			throw new AppException(new Status(ExceptionInfo.Type.DB_SEARCH, e));
+		}
+		return result;
+	}
+
+	public void setQuestionDao(QuestionDao questionDao) {
+		this.questionDao = questionDao;
+	}
+
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public void setLearningGroupDao(LearningGroupDao learningGroupDao) {
+		this.learningGroupDao = learningGroupDao;
+	}
+
+}

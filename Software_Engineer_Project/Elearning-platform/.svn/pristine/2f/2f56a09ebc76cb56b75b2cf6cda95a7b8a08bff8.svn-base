@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="da.kang.learning_platform.pojo">
+	<class name="User" table="user">
+		<id name="id" type="java.lang.Long">
+			<!-- native由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主 -->
+			<generator class="native" />
+		</id>
+		<property name="userName" column="user_name" type="java.lang.String" />
+		<property name="password" column="password" type="java.lang.String" />
+		<property name="email" column="email" type="java.lang.String" />
+		<property name="sex" column="sex" type="java.lang.Integer" />
+		<property name="registerTime" column="register_time" type="java.lang.String" />
+
+		<!-- 用户权限,多对多 -->
+		<set name="roles" table="user_role" cascade="save-update">
+			<key column="user_id" />
+			<many-to-many column="role_id" class="Role" />
+		</set>
+
+		<!--组与用户,多对多 -->
+		<set name="learningGroups" table="learning_group_user" inverse="true">
+			<key column="user_id" />
+			<many-to-many column="learning_group_id" class="LearningGroup" />
+		</set>
+
+		<!-- 下载资源,多对多 -->
+		<set name="downloadedRescs" table="user_downloaded_resc">
+			<key column="user_id" />
+			<many-to-many column="resource_id" class="Resource" />
+		</set>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,8 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/common/taglibs.jsp"%>
+<div id="menu">
+	<ul>
+		<li class="menuitem"><a href="#">个人</a></li>
+		<li class="menuitem"><a href="#">其他</a></li>
+	</ul>
+</div>

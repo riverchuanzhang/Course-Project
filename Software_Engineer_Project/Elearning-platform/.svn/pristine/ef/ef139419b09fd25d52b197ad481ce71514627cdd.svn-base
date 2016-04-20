@@ -1,0 +1,12 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.LearningGroupDao;
+
+public class LearningGroupManager {
+	private LearningGroupDao learningGroupDao;
+
+	public void setLearningGroupDao(LearningGroupDao learningGroupDao) {
+		this.learningGroupDao = learningGroupDao;
+	}
+
+}

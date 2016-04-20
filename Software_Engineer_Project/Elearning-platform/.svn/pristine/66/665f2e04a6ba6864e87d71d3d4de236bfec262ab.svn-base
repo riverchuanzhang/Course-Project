@@ -1,0 +1,8 @@
+package da.kang.learning_platform.dao;
+
+import da.kang.learning_platform.orm.hibernate.HibernateDao;
+import da.kang.learning_platform.pojo.Resource;
+
+public class ResourceDao extends HibernateDao<Resource,Long> {
+
+}

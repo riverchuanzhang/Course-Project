@@ -1,0 +1,31 @@
+package da.kang.learning_platform.service;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+
+import da.kang.learning_platform.dao.LearningGroupDao;
+import da.kang.learning_platform.orm.TransactionSupport;
+
+public class LearningGroupManager implements TransactionSupport{
+	private LearningGroupDao learningGroupDao;
+	// 编程式事务
+	private TransactionDefinition transactionDefinition;
+	private PlatformTransactionManager transactionManager;
+
+	public void setLearningGroupDao(LearningGroupDao learningGroupDao) {
+		this.learningGroupDao = learningGroupDao;
+	}
+	
+	@Override
+	public void setTransactionDefinition(
+			TransactionDefinition transactionDefinition) {
+		this.transactionDefinition = transactionDefinition;
+	}
+
+	@Override
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+}

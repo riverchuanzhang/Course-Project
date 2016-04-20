@@ -1,0 +1,13 @@
+package da.kang.learning_platform.service;
+
+import da.kang.learning_platform.dao.TopicDao;
+
+public class TopicManager {
+	private TopicDao topicDao;
+
+	public void setTopicDao(TopicDao topicDao) {
+		this.topicDao = topicDao;
+	}
+	
+
+}
