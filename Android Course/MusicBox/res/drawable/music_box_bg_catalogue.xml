@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <!--  <item android:drawable="@drawable/music_box_bg_catalogue_dark" android:state_pressed="true"/>
+    <item android:drawable="@drawable/music_box_bg_catalogue_light" android:state_pressed="false"/> -->
+
+     <item android:drawable="@color/color_94d6da" android:state_pressed="true"
+         />
+    <item android:drawable="@color/color_afdfe4" android:state_pressed="false"/>
+    
+</selector>

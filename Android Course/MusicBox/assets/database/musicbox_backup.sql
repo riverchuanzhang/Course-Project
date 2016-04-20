@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS "catalogue";
+CREATE TABLE "catalogue" ("_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "name" VARCHAR(20));
+INSERT INTO "catalogue" VALUES(0,'默认');
+DROP TABLE IF EXISTS "musicinfo";
+CREATE TABLE "musicinfo" ("_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL,"catalogue_id" INTEGER REFERENCES "catalogue"("_id"), "name" VARCHAR(20) , "path" VARCHAR(140));
