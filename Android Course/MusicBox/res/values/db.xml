@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-<!-- 	<string-array name="db_update_files">
-	    <item>zhitu_update_v1.sql</item>
-	</string-array> -->
-	
-	<item name="db_current_file" type="string">musicbox.sql</item>
-	<item name="db_current_version" type="integer">1</item>
-</resources>
